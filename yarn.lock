@@ -1591,7 +1591,7 @@
     eslint-plugin-react "~7.20.3"
     eslint-plugin-react-hooks "~2.5.1"
 
-"@xh/hoist-dev-utils@^5.4.0":
+"@xh/hoist-dev-utils@>=5.4.0":
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-5.4.0.tgz#e6f4c7f1584f2b2a847ea1ec038a9253cfca5d55"
   integrity sha512-2iYon8iR622myng2rpQk/VQknjIMRbMxoW7boFygG1ngQyRK7GPonJudkW7atW+pMeLDMtQOlxvQOUNCdjhdvw==
