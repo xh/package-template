@@ -1,6 +1,6 @@
 {
   "name": "@xh/package-template",
-  "version": "1.0.2",
+  "version": "2.0-SNAPSHOT",
   "description": "A stub JS package to demo code sharing across Hoist client apps.",
   "repository": "github:xh/package-template",
   "homepage": "https://xh.io",
@@ -23,16 +23,16 @@
   },
   "peerDependencies": {
     "@xh/hoist": ">=36.0.0",
-    "react": "~16.13.1",
-    "react-dom": "~16.13.1",
+    "react": "~17.0.1",
+    "react-dom": "~17.0.1",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
     "@xh/hoist-dev-utils": ">=5.4.0",
     "husky": "~4.3.0",
     "lint-staged": "~10.5.0",
-    "react": "~16.13.1",
-    "react-dom": "~16.13.1",
+    "react": "~17.0.1",
+    "react-dom": "~17.0.1",
     "react-dom-factories": "~1.0.2",
     "stylelint": "~13.7.2",
     "stylelint-config-standard": "~20.0.0",
