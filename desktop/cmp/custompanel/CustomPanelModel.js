@@ -1,6 +1,7 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 
-export class CustomPanelModel extends HoistModel {
+@HoistModel
+export class CustomPanelModel {
 
     get greeting() {
         return `Hello, ${XH.getUser().displayName}!`;
