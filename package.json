@@ -1,6 +1,6 @@
 {
   "name": "@xh/package-template",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "A stub JS package to demo code sharing across Hoist client apps.",
   "repository": "github:xh/package-template",
   "homepage": "https://xh.io",
