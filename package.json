@@ -23,17 +23,16 @@
   },
   "peerDependencies": {
     "@xh/hoist": ">=38.0.0",
-    "react": "~17.0.1",
-    "react-dom": "~17.0.1"
+    "react": "~18.2.0",
+    "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": ">=5.6.0",
-    "husky": "~4.3.8",
-    "lint-staged": "~10.5.4",
-    "react": "~17.0.1",
-    "react-dom": "~17.0.1",
-    "stylelint": "~13.11.0",
-    "stylelint-config-standard": "~20.0.0",
-    "stylelint-scss": "~3.19.0"
+    "@xh/hoist-dev-utils": ">=8.x",
+    "husky": ">=9.x",
+    "lint-staged": ">=15.x",
+    "react": ">=18.2.0",
+    "react-dom": ">=18.2.0",
+    "stylelint": ">=16.x",
+    "stylelint-config-standard-scss": ">=13.x"
   }
 }
