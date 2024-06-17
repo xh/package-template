@@ -22,7 +22,7 @@
     }
   },
   "peerDependencies": {
-    "@xh/hoist": ">=38.0.0",
+    "@xh/hoist": ">=64.0.5",
     "react": "~18.2.0",
     "react-dom": "~18.2.0"
   },

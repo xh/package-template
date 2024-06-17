@@ -38,4 +38,4 @@ Nexus.
 
 📫☎️🌎 info@xh.io | <https://xh.io>
 
-Copyright © 2021 Extremely Heavy Industries Inc.
+Copyright © 2024 Extremely Heavy Industries Inc.
