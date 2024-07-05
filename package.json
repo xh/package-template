@@ -22,12 +22,12 @@
     }
   },
   "peerDependencies": {
-    "@xh/hoist": ">=64.0.5",
+    "@xh/hoist": ">=65.0.0 || >=66.0.0-SNAPSHOT",
     "react": "~18.2.0",
     "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": ">=8.x",
+    "@xh/hoist-dev-utils": ">=9.x",
     "husky": ">=9.x",
     "lint-staged": ">=15.x",
     "react": ">=18.2.0",
