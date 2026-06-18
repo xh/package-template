@@ -22,17 +22,17 @@
     }
   },
   "peerDependencies": {
-    "@xh/hoist": ">=75.0.0 || >=76.0.0-SNAPSHOT",
+    "@xh/hoist": ">=75.0.0 || >=87.0.0-SNAPSHOT",
     "react": "~18.2.0",
     "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": ">=9.x",
+    "@xh/hoist-dev-utils": ">=13.x",
     "husky": ">=9.x",
-    "lint-staged": ">=15.x",
+    "lint-staged": ">=17.x",
     "react": ">=18.2.0",
     "react-dom": ">=18.2.0",
-    "stylelint": ">=16.x",
-    "stylelint-config-standard-scss": ">=13.x"
+    "stylelint": ">=17.x",
+    "stylelint-config-standard-scss": ">=17.x"
   }
 }
