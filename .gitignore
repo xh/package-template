@@ -7,6 +7,11 @@
 # Build / Libs
 build/
 node_modules/
+tsconfig.tsbuildinfo
+
+# Local Claude Code instructions
+.claude/settings.local.json
+CLAUDE.local.md
 
 # Logs
 *.log

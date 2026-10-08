@@ -1,0 +1,23 @@
+# pnpm settings (pnpm 11+ reads these from this file, not from a `pnpm` field in package.json).
+# This is a single-package repo - the file exists for settings only, not to define a workspace.
+
+# Dependency build scripts do not run unless reviewed here. Unreviewed scripts are a hard error
+# in CI. esbuild (via tsx, a dependency of @xh/hoist) is allowed so its platform binary install is
+# guaranteed. The rest ship prebuilt output or only print a funding message.
+allowBuilds:
+  browser-tabs-lock: false
+  core-js: false
+  esbuild: true
+
+# pnpm's minimum-release-age gate refuses freshly published versions as supply-chain protection.
+# Exempt XH's own packages, which are often consumed soon after publish.
+minimumReleaseAgeExclude:
+  - '@xh/*'
+
+# Several transitive deps of @xh/hoist (react-popper, react-onsenui, react-windowed-select) still
+# declare react/react-dom peer ranges capped at 18. Hoist runs React 19 - acknowledge that here
+# rather than surfacing unmet-peer warnings on every install.
+peerDependencyRules:
+  allowedVersions:
+    react: '19'
+    react-dom: '19'

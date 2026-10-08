@@ -1,0 +1,117 @@
+# Deploy Release - Publishes a numbered release to npm.
+#
+# Manually triggered from main. Validates the version input, publishes to npm, tags the commit,
+# and creates a GitHub release with auto-generated notes.
+
+name: Deploy Release
+
+on:
+    workflow_dispatch:
+        inputs:
+            version:
+                description: 'Release Version'
+                required: true
+                type: string
+
+# Run all release builds one-by-one, but never cancel a release build due to another one.
+concurrency:
+    group: deploy-release
+    cancel-in-progress: false
+
+jobs:
+    build:
+        # Releases run only from main.
+        if: github.ref == 'refs/heads/main'
+
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        # Placeholder NODE_AUTH_TOKEN: setup-node writes an .npmrc referencing ${NODE_AUTH_TOKEN},
+        # which every later pnpm call reads. Supply a job-wide placeholder to keep logs clean. The
+        # real token is provided to the publish step alone, keeping it out of dependency lifecycle
+        # scripts during install.
+        env:
+            NODE_AUTH_TOKEN: 'unused-outside-publish'
+
+        steps:
+        - uses: actions/checkout@v7
+          with:
+              fetch-depth: 0
+              fetch-tags: true
+
+        # Checkout is required to be called with `fetch-depth: 0` and `fetch-tags: true`.
+        - name: Validate release version
+          # Pinned to commit SHA of xh/hoist-dev-utils master at time of pinning.
+          # Bumped by Dependabot when newer versions of the action are released.
+          uses: xh/hoist-dev-utils/.github/actions/validate-release-version@0abc3a0453e92a258cef156856a5e0670017c088 # master
+          with:
+              version: ${{ inputs.version }}
+
+        # Installs the pnpm version pinned via the packageManager field in package.json.
+        - name: Setup pnpm
+          uses: pnpm/setup@v3
+          with:
+              # `install: false` - this workflow runs its own install step below, after
+              # Font Awesome registry auth, and with --frozen-lockfile.
+              install: false
+              # `node-version-file: false` - actions/setup-node below owns Node (and registry
+              # auth for publish).
+              node-version-file: false
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v7
+          with:
+              node-version-file: '.nvmrc'
+              registry-url: 'https://registry.npmjs.org'
+              cache: 'pnpm'
+
+        # Required because dev-time type-checking installs @xh/hoist, which depends on the
+        # private Font Awesome Pro registry.
+        - name: Configure Font Awesome registry auth
+          env:
+              FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
+          run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> .npmrc
+
+        - name: Install dependencies
+          run: pnpm install --frozen-lockfile
+
+        - name: Lint
+          run: pnpm lint
+
+        # `--no-git-checks` is required: the Font Awesome auth step above appends a token to the
+        # repo's tracked `.npmrc`, leaving the working tree dirty.
+        - name: Set release version in package.json
+          env:
+              VERSION: ${{ inputs.version }}
+          run: pnpm version --no-git-tag-version --no-git-checks "$VERSION"
+
+        # `--no-git-checks` again, as the version bump above leaves the working tree dirty.
+        # Release safety is enforced by the job-level `if:` guard and the validate step above.
+        - name: Publish release to npm
+          env:
+              NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          run: pnpm publish --no-git-checks
+
+        # Note: The tag intentionally points to a commit where package.json still has the prior
+        # version. We chose not to commit the version change back to the repo to avoid paired
+        # set/reset commits on every release. The published npm artifact has the correct release
+        # version - the tag is just a pointer to the source commit.
+        # Checkout is required to be called with `fetch-depth: 0` and `fetch-tags: true`.
+        - name: Create tag and GitHub release
+          uses: xh/hoist-dev-utils/.github/actions/create-tag-and-github-release@0abc3a0453e92a258cef156856a5e0670017c088 # master
+          with:
+              version: ${{ inputs.version }}
+          env:
+              GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Write job summary
+          # Best-effort only - a summary glitch must never fail an otherwise-good release.
+          continue-on-error: true
+          env:
+              VERSION: ${{ inputs.version }}
+          run: |
+              {
+                echo "### 📦 Release published to npm"
+                echo ""
+                echo "Version: [\`$VERSION\`](https://www.npmjs.com/package/@xh/package-template/v/$VERSION)"
+              } >> "$GITHUB_STEP_SUMMARY"

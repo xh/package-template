@@ -1,0 +1,50 @@
+# CI - Validates formatting, linting, and type-checking on PRs and pushes to main.
+#
+# This workflow does not publish artifacts. For release publishing, see Deploy Release.
+
+name: CI
+
+on:
+    push:
+        branches: [ "main" ]
+    pull_request:
+        branches: [ "main" ]
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+
+        steps:
+        - uses: actions/checkout@v7
+
+        # Installs the pnpm version pinned via the packageManager field in package.json.
+        - name: Setup pnpm
+          uses: pnpm/setup@v3
+          with:
+              # `install: false` - this workflow runs its own install step below, after
+              # Font Awesome registry auth, and with --frozen-lockfile.
+              install: false
+              # `node-version-file: false` - actions/setup-node below owns Node.
+              node-version-file: false
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v7
+          with:
+              node-version-file: '.nvmrc'
+              cache: 'pnpm'
+
+        # Required because dev-time type-checking installs @xh/hoist, which depends on the
+        # private Font Awesome Pro registry.
+        - name: Configure Font Awesome registry auth
+          env:
+              FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
+          run: echo "//npm.fontawesome.com/:_authToken=$FONTAWESOME_PACKAGE_TOKEN" >> .npmrc
+
+        - name: Install dependencies
+          run: pnpm install --frozen-lockfile
+
+        # Runs prettier, eslint, stylelint, and tsc (see package.json `lint:all`).
+        - name: Lint
+          run: pnpm lint

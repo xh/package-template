@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "lib": ["dom", "es2022"],
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noImplicitOverride": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ES2022",
+    "useDefineForClassFields": true
+  },
+  // Reference hoist-react as a composite build, mirroring how consuming apps (e.g. Toolbox) type-
+  // check against the installed, published library rather than a local sibling checkout.
+  "references": [{"path": "./node_modules/@xh/hoist"}],
+  "include": ["desktop"]
+}
