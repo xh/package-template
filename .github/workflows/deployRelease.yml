@@ -92,8 +92,8 @@ jobs:
               NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           run: pnpm publish --no-git-checks
 
-        # Note: The tag intentionally points to a commit where package.json still has the prior
-        # version. We chose not to commit the version change back to the repo to avoid paired
+        # Note: The tag intentionally points to a commit where package.json still has the
+        # SNAPSHOT version. We chose not to commit the version change back to the repo to avoid paired
         # set/reset commits on every release. The published npm artifact has the correct release
         # version - the tag is just a pointer to the source commit.
         # Checkout is required to be called with `fetch-depth: 0` and `fetch-tags: true`.

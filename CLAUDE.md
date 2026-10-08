@@ -85,8 +85,11 @@ GitHub Actions:
 - `.github/workflows/ci.yml` - format-check + lint + type-check on PRs and pushes to `main`.
 - `.github/workflows/deployRelease.yml` - manual dispatch; lints, sets the version, `pnpm publish`,
   then tags the commit and creates a GitHub release. Uses shared composite actions from
-  `xh/hoist-dev-utils` (pinned by SHA, bumped by Dependabot). The tag points at a commit whose
-  `package.json` still shows the prior version; the release version is not committed back.
+  `xh/hoist-dev-utils` (pinned by SHA, bumped by Dependabot). The repo `package.json` always holds
+  a `-SNAPSHOT` version (e.g. `4.0.0-SNAPSHOT`), like hoist-react. The workflow sets the release
+  version at publish time and does not commit it back, so the tag points at the SNAPSHOT commit.
+  Never set `package.json` to the exact release version - `pnpm version` then fails with
+  `ERR_PNPM_VERSION_NOT_CHANGED`.
 
 Required secrets: `FONTAWESOME_PACKAGE_TOKEN` and `NPM_TOKEN` (plus the same FA token in Dependabot
 secrets).
