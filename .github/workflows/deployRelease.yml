@@ -98,7 +98,7 @@ jobs:
         # version - the tag is just a pointer to the source commit.
         # Checkout is required to be called with `fetch-depth: 0` and `fetch-tags: true`.
         - name: Create tag and GitHub release
-          uses: xh/hoist-dev-utils/.github/actions/create-tag-and-github-release@0abc3a0453e92a258cef156856a5e0670017c088 # master
+          uses: xh/hoist-dev-utils/.github/actions/create-tag-and-github-release@c65099c640ff360d0e7b068de6a3417421be9264 # master
           with:
               version: ${{ inputs.version }}
           env:
