@@ -1,7 +1,7 @@
 # Deploy Release - Publishes a numbered release to npm.
 #
-# Manually triggered from main. Validates the version input, publishes to npm, tags the commit,
-# and creates a GitHub release with auto-generated notes.
+# Manually triggered from main. Validates the version input, runs the CI checks, publishes to npm
+# with its Hoist Docs index, tags the commit, and creates a GitHub release with auto-generated notes.
 
 name: Deploy Release
 
@@ -43,7 +43,7 @@ jobs:
         - name: Validate release version
           # Pinned to commit SHA of xh/hoist-dev-utils master at time of pinning.
           # Bumped by Dependabot when newer versions of the action are released.
-          uses: xh/hoist-dev-utils/.github/actions/validate-release-version@0abc3a0453e92a258cef156856a5e0670017c088 # master
+          uses: xh/hoist-dev-utils/.github/actions/validate-release-version@d65135e514348352f235e3cd7547d1b4451805ac # master
           with:
               version: ${{ inputs.version }}
 
@@ -65,7 +65,7 @@ jobs:
               registry-url: 'https://registry.npmjs.org'
               cache: 'pnpm'
 
-        # Required because dev-time type-checking installs @xh/hoist, which depends on the
+        # Required because @xh/hoist (a devDependency, for type-checking and tests) depends on the
         # private Font Awesome Pro registry.
         - name: Configure Font Awesome registry auth
           env:
@@ -75,8 +75,19 @@ jobs:
         - name: Install dependencies
           run: pnpm install --frozen-lockfile
 
+        # Build the Hoist Docs index with the newest builder release in package.json's range, not
+        # the one the lockfile recorded, so builder fixes reach every published build.
+        - name: Update the Hoist Docs builder
+          run: pnpm update @xh/hoist-docs-builder --no-save
+
         - name: Lint
           run: pnpm lint
+
+        - name: Type check
+          run: pnpm typecheck
+
+        - name: Unit tests
+          run: pnpm test
 
         # `--no-git-checks` is required: the Font Awesome auth step above appends a token to the
         # repo's tracked `.npmrc`, leaving the working tree dirty.
@@ -85,6 +96,7 @@ jobs:
               VERSION: ${{ inputs.version }}
           run: pnpm version --no-git-tag-version --no-git-checks "$VERSION"
 
+        # `prepack` builds the Hoist Docs index into the package, with the release version just set.
         # `--no-git-checks` again, as the version bump above leaves the working tree dirty.
         # Release safety is enforced by the job-level `if:` guard and the validate step above.
         - name: Publish release to npm
@@ -98,7 +110,7 @@ jobs:
         # version - the tag is just a pointer to the source commit.
         # Checkout is required to be called with `fetch-depth: 0` and `fetch-tags: true`.
         - name: Create tag and GitHub release
-          uses: xh/hoist-dev-utils/.github/actions/create-tag-and-github-release@0abc3a0453e92a258cef156856a5e0670017c088 # master
+          uses: xh/hoist-dev-utils/.github/actions/create-tag-and-github-release@d65135e514348352f235e3cd7547d1b4451805ac # master
           with:
               version: ${{ inputs.version }}
           env:

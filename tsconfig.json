@@ -7,13 +7,17 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "noImplicitOverride": true,
+    // TypeScript 6+ rejects `import './Foo.scss'` by default. Hoist code imports its styles this way.
+    "noUncheckedSideEffectImports": false,
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    // TypeScript 6+ defaults to strict mode, which Hoist and Hoist apps are not written for.
+    "strict": false,
     "target": "ES2022",
     "useDefineForClassFields": true
   },
   // Reference hoist-react as a composite build, mirroring how consuming apps (e.g. Toolbox) type-
   // check against the installed, published library rather than a local sibling checkout.
   "references": [{"path": "./node_modules/@xh/hoist"}],
-  "include": ["desktop"]
+  "include": ["desktop", "vitest.config.mts"]
 }

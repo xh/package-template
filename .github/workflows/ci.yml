@@ -1,4 +1,5 @@
-# CI - Validates formatting, linting, and type-checking on PRs and pushes to main.
+# CI - Validates formatting, linting, type-checking, unit tests, and the packed package on PRs and
+# pushes to main.
 #
 # This workflow does not publish artifacts. For release publishing, see Deploy Release.
 
@@ -9,6 +10,11 @@ on:
         branches: [ "main" ]
     pull_request:
         branches: [ "main" ]
+
+# Only the latest commit's result matters - cancel superseded runs for the same PR or branch.
+concurrency:
+    group: ci-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
 
 jobs:
     lint:
@@ -35,7 +41,7 @@ jobs:
               node-version-file: '.nvmrc'
               cache: 'pnpm'
 
-        # Required because dev-time type-checking installs @xh/hoist, which depends on the
+        # Required because @xh/hoist (a devDependency, for type-checking and tests) depends on the
         # private Font Awesome Pro registry.
         - name: Configure Font Awesome registry auth
           env:
@@ -45,6 +51,19 @@ jobs:
         - name: Install dependencies
           run: pnpm install --frozen-lockfile
 
-        # Runs prettier, eslint, stylelint, and tsc (see package.json `lint:all`).
+        # Runs eslint, stylelint, and prettier --check (see package.json `lint:all`).
         - name: Lint
           run: pnpm lint
+
+        - name: Type check
+          run: pnpm typecheck
+
+        # In CI, vitest.config.mts adds the github-actions reporter, which annotates failures on
+        # the PR diff.
+        - name: Unit tests
+          run: pnpm test
+
+        # The package ships as source, so its build is the packed tarball. This runs `prepack`,
+        # which builds the Hoist Docs index and fails on a bad doc registry, then lists what ships.
+        - name: Build package
+          run: pnpm pack --dry-run

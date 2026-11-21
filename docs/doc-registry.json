@@ -1,0 +1,45 @@
+{
+  "mcpInstructions": [
+    "Read @xh/package-template/docs/README.md before you add a component that this package may already provide.",
+    "Import from the component folder barrels, such as @xh/package-template/desktop/cmp/custompanel."
+  ],
+  "mcpCategories": [
+    {"id": "index", "title": "Index"},
+    {"id": "concept", "title": "Concept Documentation"}
+  ],
+  "viewerCategories": [{"id": "overview", "title": "Overview"}],
+  "entries": [
+    {
+      "id": "docs/README.md",
+      "title": "Package Template Docs",
+      "mcpCategory": "index",
+      "viewerCategory": "overview",
+      "description": "What the package provides, and an index of its docs.",
+      "keywords": ["index", "customPanel", "CustomPanel", "CustomPanelModel", "exports"],
+      "aliases": ["index"]
+    },
+    {
+      "id": "docs/package-structure.md",
+      "title": "Package Structure",
+      "mcpCategory": "concept",
+      "viewerCategory": "overview",
+      "description": "How a Hoist companion package is laid out, published, documented, tested, and developed against an app.",
+      "keywords": [
+        "companion package",
+        "peerDependencies",
+        "files",
+        "hoistDocs",
+        "doc-registry",
+        "hoist-docs-builder",
+        "prepack",
+        "configureVitest",
+        "vitest",
+        "XH_INLINE_PACKAGES",
+        "extraIncludePaths",
+        "publish",
+        "release"
+      ],
+      "aliases": ["structure"]
+    }
+  ]
+}

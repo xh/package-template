@@ -8,19 +8,30 @@
   "author": "Extremely Heavy Industries, Inc.",
   "license": "Apache-2.0",
   "files": [
-    "desktop"
+    "desktop",
+    "docs",
+    "hoist-docs",
+    "!**/*.spec.ts"
   ],
+  "hoistDocs": {
+    "id": "package-template",
+    "index": "hoist-docs/index.json.gz"
+  },
   "scripts": {
     "lint": "pnpm lint:all",
-    "lint:all": "pnpm lint:code && pnpm lint:styles && pnpm lint:format && pnpm lint:types",
+    "lint:all": "pnpm lint:code && pnpm lint:styles && pnpm lint:format",
     "lint:code": "eslint .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
-    "lint:format": "prettier --check \"**/*.{js,jsx,ts,tsx,scss,sass,css}\"",
-    "lint:types": "tsc",
+    "lint:format": "prettier --check \"**/*.{js,jsx,ts,tsx,mjs,mts,scss,sass,css}\"",
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build:docs": "hoist-docs-build --root . --file hoist-docs/index.json.gz",
+    "prepack": "pnpm build:docs",
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
+    "*.{js,jsx,ts,tsx,mjs,mts}": [
       "prettier --write",
       "eslint"
     ],
@@ -30,29 +41,37 @@
     ]
   },
   "peerDependencies": {
-    "@xh/hoist": ">=88.1.2 || >=89.0.0-SNAPSHOT",
+    "@xh/hoist": ">=91.0.0 || >=92.0.0-SNAPSHOT",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
-    "@types/lodash": "^4.17.25",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@types/lodash": "^4.17.27",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@xh/eslint-config": "^8.1.0",
-    "@xh/hoist": "^88.1.2",
-    "ag-grid-community": "~36.2.0",
-    "ag-grid-react": "~36.2.0",
-    "eslint": "^10.11.0",
+    "@xh/hoist": "^91.0.0",
+    "@xh/hoist-dev-utils": "^16.5.0",
+    "@xh/hoist-docs": "^1.0.0",
+    "@xh/hoist-docs-builder": "^1.0.0",
+    "ag-grid-community": "~36.3.0",
+    "ag-grid-react": "~36.3.0",
+    "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
-    "lint-staged": "^17.6.0",
-    "prettier": "^3.9.9",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
-    "stylelint": "^17.15.0",
-    "stylelint-config-recommended-scss": "^17.0.1",
+    "jsdom": "^31.0.1",
+    "lint-staged": "^17.6.1",
+    "msw": "^3.0.7",
+    "prettier": "^3.10.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "stylelint": "^18.1.0",
+    "stylelint-config-recommended-scss": "^18.0.0",
     "type-fest": "^5.10.0",
-    "typescript": "^5.9.3"
+    "typescript": "~7.0.2",
+    "vitest": "^5.1.1"
   },
-  "packageManager": "pnpm@12.7.0+sha512.9c56477e360068d6e9dca6a92efb4e46b3dc5a52fcebf3d84d78b9736c0ded589a561621a52f68219a7a39facc63cdc079c3226ef9c9d5f02b79f74e69a807b6"
+  "packageManager": "pnpm@12.21.0+sha512.66fd8278ee28935ce951792d34367ff3af5c432a2756445823029533835b8da529bbe0be5130afd56ed0713fb8789e47bad82d93bd5ae2fe54b15562d6276ef0"
 }
