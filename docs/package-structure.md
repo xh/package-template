@@ -34,13 +34,16 @@ devDependencies: `ag-grid-community`, `ag-grid-react`, `@types/lodash`, and `typ
 
 ## Code Conventions
 
-Write code the way the targeted Hoist version expects. For Hoist v91, that means:
+Write package code the same way as app code for the Hoist version you target. The docs that ship
+with `@xh/hoist`, and the Hoist Docs tools that serve them, describe the current patterns. When you
+move the package to a new Hoist major, follow its upgrade notes here as an app would.
 
-- TC39 decorators on `accessor` fields, such as `@bindable accessor count = 0`. Do not set
-  `experimentalDecorators` in `tsconfig.json`.
-- Child elements in the `children` key of an element spec, not `items`.
-- Hoist CSS variables such as `var(--xh-spacing)`, scoped under the component's `className`.
-- Typed props that extend `HoistProps` and `BoxProps`, not React `propTypes`.
+Two conventions matter more in a shared package than in an app:
+
+- Give components typed props that extend `HoistProps` and `BoxProps`. Apps then get type checks
+  and editor help when they use the component.
+- Scope styles under the component's `className`, and build them on Hoist CSS variables. The
+  component then follows each app's theme and does not leak styles into it.
 
 Each component folder holds the component, its model, its stylesheet, an `index.ts` barrel, and
 its specs. Apps import from the folder, as in

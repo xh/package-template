@@ -65,16 +65,14 @@ library. `tsc` compiles Hoist's `.ts` source, so packages Hoist imports types fr
 Apps run against a local checkout of this package with `XH_INLINE_PACKAGES=@xh/package-template`
 (a hoist-dev-utils feature). See `docs/package-structure.md`.
 
-Hoist v88+ uses TC39 decorators. `tsconfig.json` must NOT set `experimentalDecorators`. Observable
-fields need `accessor` (`@bindable accessor foo = null`), with no `makeObservable(this)` call.
-TypeScript 7 is used for `tsc`. `tsconfig.json` sets `strict: false` and
-`noUncheckedSideEffectImports: false`, as Hoist apps do.
+Write code as the installed Hoist version expects. Use the `hoist-docs` MCP tools to check current
+APIs rather than relying on memory, and follow Hoist's upgrade notes when moving to a new major.
+`tsconfig.json` mirrors a Hoist app's settings.
 
 Components follow the standard Hoist component-plus-model pattern, written as TypeScript:
 - `CustomPanel.ts` - the view, `hoistCmp.withFactory<CustomPanelProps>(...)` paired with its model via
   `creates(CustomPanelModel)`. Props are a typed interface extending `HoistProps<CustomPanelModel>`
-  and `BoxProps`. Imports `@xh/hoist/desktop/register` and its own `.scss`. Child elements go in
-  `children` (Hoist v91+), not `items`.
+  and `BoxProps`. Imports `@xh/hoist/desktop/register` and its own `.scss`.
 - `CustomPanelModel.ts` - a `HoistModel` subclass holding state and logic.
 - `CustomPanelModel.spec.ts` - a Vitest spec beside the code it tests.
 - `index.ts` - re-exports the component and model (`export * from ...`).
@@ -84,8 +82,8 @@ no per-file copyright header, matching this repo's minimal convention (the "belo
 in hoist-react is specific to that repo - do not copy it here).
 
 Styling uses Hoist CSS variables (e.g. `var(--xh-orange)`, `var(--xh-spacing)`) scoped under the
-component's `className` (`xh-custom-panel`). Hoist v91 renamed many variables and dropped the `-px`
-companions - check `node_modules/@xh/hoist/styles/vars.scss` for current names.
+component's `className` (`xh-custom-panel`). Check `node_modules/@xh/hoist/styles/vars.scss` for
+current names.
 
 ## Docs (Hoist Docs index)
 
