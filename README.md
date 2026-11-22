@@ -51,9 +51,11 @@ need these repo or org secrets:
 | Secret | Used by | Purpose |
 | --- | --- | --- |
 | `FONTAWESOME_PACKAGE_TOKEN` | CI, Deploy Release | Auth for the private Font Awesome registry during install |
-| `NPM_TOKEN` | Deploy Release | Auth for `pnpm publish` |
 
-`GITHUB_TOKEN` is provided automatically. Dependabot also needs `FONTAWESOME_PACKAGE_TOKEN` under
+`GITHUB_TOKEN` is provided automatically. Deploy Release needs no npm token: it publishes through
+npm [trusted publishing](https://docs.npmjs.com/trusted-publishers), which authenticates the
+workflow over OIDC and attaches a provenance attestation. The package's npm settings name this repo
+and `deployRelease.yml` as its trusted publisher. Dependabot also needs `FONTAWESOME_PACKAGE_TOKEN` under
 **Dependabot secrets**, which are separate from Actions secrets, to resolve npm updates.
 
 An organization would likely publish its internal packages to a private registry such as

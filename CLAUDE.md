@@ -122,5 +122,6 @@ GitHub Actions:
   Never set `package.json` to the exact release version - `pnpm version` then fails with
   `ERR_PNPM_VERSION_NOT_CHANGED`.
 
-Required secrets: `FONTAWESOME_PACKAGE_TOKEN` and `NPM_TOKEN` (plus the same FA token in Dependabot
-secrets).
+Required secrets: `FONTAWESOME_PACKAGE_TOKEN` (plus the same token in Dependabot secrets). Publishing
+uses npm trusted publishing over OIDC (`id-token: write`), with no npm token. npm checks the
+`repository` URL in `package.json` against the repo, so keep it in full URL form.

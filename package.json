@@ -2,7 +2,10 @@
   "name": "@xh/package-template",
   "version": "5.0.0-SNAPSHOT",
   "description": "A stub package to demo code sharing across Hoist client apps.",
-  "repository": "github:xh/package-template",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xh/package-template.git"
+  },
   "homepage": "https://xh.io",
   "bugs": "https://github.com/xh/package-template/issues",
   "author": "Extremely Heavy Industries, Inc.",

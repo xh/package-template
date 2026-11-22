@@ -26,10 +26,14 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             contents: write
+            # Lets the job mint a short-lived OIDC token, which pnpm exchanges with npm for a scoped
+            # publish token (npm "trusted publishing"). npm honors it only for the trusted publisher
+            # configured on the package, which names this repo and workflow file. It also lets npm
+            # attach a provenance attestation to the published tarball.
+            id-token: write
         # Placeholder NODE_AUTH_TOKEN: setup-node writes an .npmrc referencing ${NODE_AUTH_TOKEN},
-        # which every later pnpm call reads. Supply a job-wide placeholder to keep logs clean. The
-        # real token is provided to the publish step alone, keeping it out of dependency lifecycle
-        # scripts during install.
+        # which every later pnpm call reads. Supply a job-wide placeholder to keep logs clean. No
+        # real npm token is provided - the publish step authenticates through OIDC.
         env:
             NODE_AUTH_TOKEN: 'unused-outside-publish'
 
@@ -99,9 +103,12 @@ jobs:
         # `prepack` builds the Hoist Docs index into the package, with the release version just set.
         # `--no-git-checks` again, as the version bump above leaves the working tree dirty.
         # Release safety is enforced by the job-level `if:` guard and the validate step above.
+        #
+        # Auth is OIDC trusted publishing only. If the OIDC exchange fails, pnpm falls back to the
+        # placeholder token, which npm rejects. So a misconfigured trusted publisher fails the
+        # release before the tag and GitHub release exist, and the run can be re-run once it is
+        # fixed. Under trusted publishing, npm attaches provenance without a `--provenance` flag.
         - name: Publish release to npm
-          env:
-              NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           run: pnpm publish --no-git-checks
 
         # Note: The tag intentionally points to a commit where package.json still has the
