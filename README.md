@@ -2,44 +2,28 @@
 A stub package to demo code sharing across Hoist client apps.
 ----------------------------------------------------------------
 
-This project is a deliberately minimal TypeScript package designed to provide a template for custom
-packages used to share code and styles within an organization or group of Hoist applications.
+This project is a deliberately minimal template for a Hoist companion package: an npm package that
+shares components, models, and styles across a group of [Hoist](https://github.com/xh/hoist-react)
+apps. Copy its layout to start your own.
+
+It shows each part of the setup in its simplest form:
+
+- **Source-only publishing.** The package ships its TypeScript and SCSS as written. Each app
+  compiles it with its own build, as it does hoist-react.
+- **Docs for agents.** The package ships a [Hoist Docs](https://github.com/xh/hoist-docs) index, so
+  AI coding agents in an app can search its docs and API next to Hoist's.
+- **Unit tests.** A sample spec runs on Vitest with hoist-react's test kit.
+- **CI and releases.** GitHub Actions workflows check every PR and publish releases to npm.
 
 See Toolbox ([repo](https://github.com/xh/toolbox) |
-[app](https://toolbox.xh.io/app/other/customPackage)) for a demo usage of this package.
+[app](https://toolbox.xh.io/app/other/customPackage)) for a demo usage of this package. Toolbox
+also shows this package's docs in its docs viewer.
 
-This package and its use in Toolbox follow the same approach as
-[hoist-react](https://github.com/xh/hoist-react) itself, where the package is left unprocessed /
-unpackaged when published to npm. The consuming app then transpiles it with Rsbuild/SWC along with
-Hoist and app code during the app build. See the `extraIncludePaths` option in Toolbox's commented
-`rsbuild.config.mjs` for the relevant setting.
+## Docs
 
-Code in this package follows the same conventions as the Hoist version it targets. For Hoist v88+,
-that means TC39 decorators (`@bindable accessor foo`), not the legacy `experimentalDecorators` form.
-The consuming app's build applies the decorator transform to this package's source.
-
-## Publishing
-
-Releases are published to npm by the **Deploy Release** GitHub Actions workflow
-(`.github/workflows/deployRelease.yml`). Trigger it manually from the Actions tab with the desired
-version number. The workflow lints and type-checks, sets the version, publishes to [npmjs.com](https://www.npmjs.com/package/@xh/package-template), and
-tags the source commit with an auto-generated GitHub release. The **CI** workflow
-(`.github/workflows/ci.yml`) checks formatting, lints, and type-checks on every PR and push to `main`.
-
-Both workflows install `@xh/hoist` (so `tsc` can type-check against the real library), which in turn
-resolves `@fortawesome/*` from a private registry. They therefore require these repo (or org)
-secrets:
-
-| Secret | Used by | Purpose |
-| --- | --- | --- |
-| `FONTAWESOME_PACKAGE_TOKEN` | CI, Deploy Release | Auth for the private Font Awesome registry during install |
-| `NPM_TOKEN` | Deploy Release | Auth for `pnpm publish` |
-
-`GITHUB_TOKEN` is provided automatically. Dependabot additionally needs `FONTAWESOME_PACKAGE_TOKEN`
-configured under **Dependabot secrets** (separate from Actions secrets) to resolve npm updates.
-
-An organization would likely publish its internal shared code to a privately hosted artifact
-repository such as Artifactory or Nexus rather than to public npm.
+- [Package Structure](./docs/package-structure.md) explains each part of the setup, and how to run
+  an app against a local checkout of the package.
+- [Docs index](./docs/README.md) lists what the package provides.
 
 ## Local development
 
@@ -47,13 +31,35 @@ This repo uses [pnpm](https://pnpm.io), pinned via the `packageManager` field in
 Run `corepack enable pnpm` once to have Corepack provide the right version.
 
 ```bash
-pnpm install   # requires FONTAWESOME_PACKAGE_TOKEN configured in your ~/.npmrc
-pnpm lint      # eslint + stylelint + prettier + tsc
+pnpm install      # requires FONTAWESOME_PACKAGE_TOKEN configured in your ~/.npmrc
+pnpm lint         # eslint + stylelint + prettier
+pnpm typecheck    # tsc, against the installed @xh/hoist
+pnpm test         # unit tests
+pnpm build:docs   # build the Hoist Docs index into hoist-docs/
 ```
 
-`tsc` type-checks against the installed `@xh/hoist` source. Hoist imports types from a few packages
-that apps normally provide, so they are listed here as devDependencies purely for type-checking:
-`ag-grid-community`, `ag-grid-react`, `@types/lodash`, and `type-fest`.
+## Publishing
+
+The **Deploy Release** workflow (`.github/workflows/deployRelease.yml`) publishes releases to
+[npmjs.com](https://www.npmjs.com/package/@xh/package-template). Run it by hand from the Actions
+tab with the version number. The **CI** workflow (`.github/workflows/ci.yml`) runs the same checks
+on every PR and push to `main`.
+
+Both workflows install `@xh/hoist`, which resolves `@fortawesome/*` from a private registry. They
+need these repo or org secrets:
+
+| Secret | Used by | Purpose |
+| --- | --- | --- |
+| `FONTAWESOME_PACKAGE_TOKEN` | CI, Deploy Release | Auth for the private Font Awesome registry during install |
+
+`GITHUB_TOKEN` is provided automatically. Deploy Release needs no npm token: it publishes through
+npm [trusted publishing](https://docs.npmjs.com/trusted-publishers), which authenticates the
+workflow over OIDC and attaches a provenance attestation. The package's npm settings name this repo
+and `deployRelease.yml` as its trusted publisher. Dependabot also needs `FONTAWESOME_PACKAGE_TOKEN` under
+**Dependabot secrets**, which are separate from Actions secrets, to resolve npm updates.
+
+An organization would likely publish its internal packages to a private registry such as
+Artifactory or Nexus rather than to public npm.
 
 ------------------------------------------
 

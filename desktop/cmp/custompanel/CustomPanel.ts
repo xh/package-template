@@ -18,7 +18,7 @@ export const [CustomPanel, customPanel] = hoistCmp.withFactory<CustomPanelProps>
         return panel({
             title: 'CustomPanel component from @xh/package-template',
             icon: Icon.boxFull(),
-            items: [
+            children: [
                 p(model.greeting),
                 p(
                     'This is a simple panel component imported from ',

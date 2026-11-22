@@ -22,3 +22,9 @@ CLAUDE.local.md
 ehthumbs.db
 Thumbs.db
 
+
+# Unit test reports
+.vitest/
+
+# Hoist Docs index, built by prepack to ship in the package
+/hoist-docs/

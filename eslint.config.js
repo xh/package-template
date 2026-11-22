@@ -6,5 +6,5 @@ module.exports = defineConfig([
     {
         extends: [xhEslintConfig, prettier]
     },
-    globalIgnores(['build/**/*', '.yarn/**/*', 'node_modules/**/*'])
+    globalIgnores(['.vitest/**/*', 'build/**/*', 'hoist-docs/**/*', 'node_modules/**/*'])
 ]);

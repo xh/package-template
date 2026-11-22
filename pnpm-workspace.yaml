@@ -2,9 +2,10 @@
 # This is a single-package repo - the file exists for settings only, not to define a workspace.
 
 # Dependency build scripts do not run unless reviewed here. Unreviewed scripts are a hard error
-# in CI. esbuild (via tsx, a dependency of @xh/hoist) is allowed so its platform binary install is
-# guaranteed. The rest ship prebuilt output or only print a funding message.
+# in CI. esbuild (via tsx, which Vite and so Vitest pull in) is allowed so its platform binary
+# install is guaranteed. The rest ship prebuilt output or only print a funding message.
 allowBuilds:
+  '@parcel/watcher': false
   browser-tabs-lock: false
   core-js: false
   esbuild: true
@@ -14,10 +15,22 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - '@xh/*'
 
+# Keep pnpm-lock.yaml a single YAML document. By default pnpm 12 records the pinned pnpm version in
+# a leading lockfile document, and GitHub's dependency graph reads only that first document - so it
+# sees none of our real deps and Dependabot raises no security alerts. With `ignore`, pnpm runs
+# whatever version is installed rather than switching to the `packageManager` pin. CI still installs
+# the pinned version via pnpm/setup. Remove once GitHub parses multi-document lockfiles - see
+# https://github.com/dependabot/dependabot-core/issues/15904.
+pmOnFail: ignore
+
 # Several transitive deps of @xh/hoist (react-popper, react-onsenui, react-windowed-select) still
 # declare react/react-dom peer ranges capped at 18. Hoist runs React 19 - acknowledge that here
 # rather than surfacing unmet-peer warnings on every install.
+#
+# @vitest/mocker caps its optional msw peer below 3. Only Vitest's browser mode uses msw there. The
+# unit tests run in jsdom and mock the server with msw 3 directly.
 peerDependencyRules:
   allowedVersions:
     react: '19'
     react-dom: '19'
+    '@vitest/mocker>msw': '3'
