@@ -58,8 +58,7 @@ jobs:
         - name: Type check
           run: pnpm typecheck
 
-        # In CI, vitest.config.mts adds the github-actions reporter, which annotates failures on
-        # the PR diff.
+        # On GitHub Actions, Vitest also annotates failures on the PR diff.
         - name: Unit tests
           run: pnpm test
 

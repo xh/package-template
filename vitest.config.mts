@@ -5,20 +5,12 @@
  * hoist-core. See the "Unit Tests in an App" section of hoist-react's `docs/unit-testing.md`.
  */
 import configureVitest from '@xh/hoist-dev-utils/configureVitest';
-import {defineConfig, mergeConfig} from 'vitest/config';
+import {defineConfig} from 'vitest/config';
 
 export default defineConfig(
-    mergeConfig(
-        configureVitest({
-            appCode: 'packageTemplate',
-            appName: 'Package Template',
-            include: ['desktop/**/*.spec.ts']
-        }),
-        {
-            test: {
-                // In CI, also annotate failures inline on the PR diff.
-                reporters: process.env.CI ? ['default', 'github-actions'] : ['default']
-            }
-        }
-    )
+    configureVitest({
+        appCode: 'packageTemplate',
+        appName: 'Package Template',
+        include: ['desktop/**/*.spec.ts']
+    })
 );
