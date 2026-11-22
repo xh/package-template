@@ -3,8 +3,7 @@
     "hoist-docs": {
       "type": "stdio",
       "command": "node",
-      "args": ["node_modules/@xh/hoist-docs/bin/hoist-docs.mjs"],
-      "env": {}
+      "args": ["node_modules/@xh/hoist-docs/bin/hoist-docs.mjs"]
     }
   }
 }
