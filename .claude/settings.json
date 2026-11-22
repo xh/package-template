@@ -9,8 +9,7 @@
       "WebFetch",
       "WebSearch",
       "Write",
-      "mcp__hoist-docs__*",
-      "mcp__ide__getDiagnostics"
+      "mcp__hoist-docs__*"
     ]
   },
   "enabledMcpjsonServers": [
@@ -20,15 +19,13 @@
     "xh@hoist-ai": true,
     "typescript-lsp@claude-plugins-official": true
   },
-  "env": {
-    "ENABLE_LSP_TOOL": "1"
-  },
   "extraKnownMarketplaces": {
     "hoist-ai": {
       "source": {
         "source": "github",
         "repo": "xh/hoist-ai"
-      }
+      },
+      "autoUpdate": true
     }
   }
 }
